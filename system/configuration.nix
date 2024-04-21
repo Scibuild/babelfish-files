@@ -34,7 +34,6 @@
   programs.river.enable = true;
 
   # Configure keymap in X11
-  services.xserver.xkb.layout = "us";
   services.xserver.xkb.options = "caps:escape";
 
   # Enable CUPS to print documents.

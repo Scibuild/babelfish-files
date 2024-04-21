@@ -19,8 +19,8 @@
 
     system = "x86_64-linux";
 
-    hostname = "babelfish"
-    username = "alex"
+    hostname = "babelfish";
+    username = "alex";
 
   in {
     homeManagerConfigurations = {
