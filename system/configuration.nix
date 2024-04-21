@@ -28,6 +28,7 @@
   console.useXkbConfig = true; # use xkb.options in tty.
 
   programs.river.enable = true;
+  programs.sway.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb.options = "caps:escape";
@@ -59,6 +60,12 @@
     firefox
     tree
   ];
+
+  programs.neovim = {
+    enable = true;
+    vimAlias = true;
+    defaultEditor = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

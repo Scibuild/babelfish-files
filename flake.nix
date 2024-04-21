@@ -27,26 +27,34 @@
 
 
   in {
-    homeConfigurations = {
-      main = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [
-          ./home.nix
-          {
-            home = {
-              inherit homeDirectory username;
-              stateVersion = "24.05";
-            };
-          }
-        ];
-      };
-    };
+    # homeConfigurations = {
+    #   main = home-manager.lib.homeManagerConfiguration {
+    #     inherit pkgs;
+    #     modules = [
+    #       ./home.nix
+    #       {
+    #         home = {
+    #           inherit homeDirectory username;
+    #           stateVersion = "24.05";
+    #         };
+    #       }
+    #     ];
+    #   };
+    # };
 
     nixosConfigurations = {
       ${hostname} = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [ 
           ./system/configuration.nix 
+
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.${username} = import ./home.nix {
+              inherit homeDirectory username;
+            };
+          }
         ];
       };
     };
