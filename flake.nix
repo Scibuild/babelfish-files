@@ -11,30 +11,43 @@
 
   outputs = { self, nixpkgs, home-manager, ... }: 
   let
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-      overlays = [];
-    };
-
     system = "x86_64-linux";
 
     hostname = "babelfish";
     username = "alex";
+    homeDirectory = "/home/${username}";
+    configHome = "${homeDirectory}/.config";
+
+    pkgs = import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+      config.xdg.configHome = configHome;
+      overlays = [];
+    };
+
 
   in {
-    homeManagerConfigurations = {
-      ${username} = home-manager.lib.homeManagerConfiguration {
-        inherit system username;
-        homeDirectory = "/home/${username}";
-        configuration.imports = [ ./home.nix ];
+    homeConfigurations = {
+      main = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./home.nix
+          {
+            home = {
+              inherit homeDirectory username;
+              stateVersion = "24.05";
+            };
+          }
+        ];
       };
     };
 
     nixosConfigurations = {
       ${hostname} = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [ ./system/configuration.nix ];
+        modules = [ 
+          ./system/configuration.nix 
+        ];
       };
     };
   };
