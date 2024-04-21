@@ -56,9 +56,8 @@
     vim
     neovim
     wget
-    git
-    firefox
-    tree
+
+    wl-clipboard
   ];
 
   programs.neovim = {

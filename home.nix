@@ -1,6 +1,11 @@
 {username, homeDirectory}: { pkgs, ... }: 
 let
   packages = with pkgs; [
+    firefox
+    killall
+    ripgrep
+    ripgrep-all
+    ncdu
   ];
 in
 {
@@ -10,6 +15,12 @@ in
     inherit username homeDirectory packages;
     stateVersion = "24.05";
     file.".Xcompose".source = ./config/xcompose/.XCompose;
+    file.".config/nvim".source = ./config/nvim;
+
+    sessionVariables = {
+      MANPAGER = "nvim +Man!";
+      MANWIDTH = "72";
+    };
   };
 
   programs.neovim = {
@@ -66,7 +77,7 @@ in
           "Super BTN_MIDDLE" = "toggle-float";
         };
       };
-      keyboard-layout = "-options caps:escape,ralt:compose us";
+      keyboard-layout = "-options caps:escape,compose:ralt us";
       set-repeat = "50 300";
       default-layout = "rivertile";
     };
