@@ -9,6 +9,7 @@ in
   home = {
     inherit username homeDirectory packages;
     stateVersion = "24.05";
+    file.".Xcompose".source = ./config/xcompose/.XCompose;
   };
 
   programs.neovim = {
