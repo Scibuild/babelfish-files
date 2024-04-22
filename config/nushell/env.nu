@@ -13,7 +13,7 @@ def create_left_prompt [] {
     let separator_color = (if (is-admin) { ansi light_red_bold } else { ansi light_green_bold })
     let path_segment = $"($path_color)($dir)"
 
-    $path_segment | str replace --all (char path_sep) $"($separator_color)(char path_sep)($path_color)"
+    $path_segment | str replace --all (char path_sep) $"# ($separator_color)(char path_sep)($path_color)\n"
 }
 
 def create_right_prompt [] {
@@ -35,11 +35,11 @@ def create_right_prompt [] {
 }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt }
-$env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
+$env.PROMPT_COMMAND_RIGHT = {|| }
 
-$env.PROMPT_INDICATOR = {|| "> " }
-$env.PROMPT_INDICATOR_VI_INSERT = {|| ": " }
-$env.PROMPT_INDICATOR_VI_NORMAL = {|| "> " }
+$env.PROMPT_INDICATOR = {|| "; " }
+$env.PROMPT_INDICATOR_VI_INSERT = {|| "; " }
+$env.PROMPT_INDICATOR_VI_NORMAL = {|| "; " }
 $env.PROMPT_MULTILINE_INDICATOR = {|| "::: " }
 
 $env.ENV_CONVERSIONS = {

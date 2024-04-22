@@ -159,7 +159,7 @@ $env.config = {
             truncating_suffix: "..."
         }
         header_on_separator: false
-        abbreviated_row_count: 10
+        # abbreviated_row_count: 10
     }
 
     error_style: "plain" # "fancy" or "plain" for screen reader-friendly error messages
@@ -382,6 +382,15 @@ $env.config = {
             keycode: char_r
             mode: [emacs, vi_insert, vi_normal]
             event: { send: menu name: history_menu }
+        }
+        {
+            name: history_menu
+            modifier: none
+            keycode: char_/
+            mode: vi_normal
+            event: [
+              { send: menu name: history_menu }
+            ]
         }
         {
             name: help_menu
