@@ -29,8 +29,8 @@ function imap(shortcut, command)
   map('i', shortcut, command)
 end
 
-nmap("<C-S>", ":nohlsearch<C-R>")
-imap("<C-S>", "<ESC>:nohlsearch<C-R>i")
+nmap("<C-S>", ":nohlsearch<CR>")
+imap("<C-S>", "<ESC>:nohlsearch<CR>i")
 nmap("j", "gj")
 nmap("k", "gk")
 
