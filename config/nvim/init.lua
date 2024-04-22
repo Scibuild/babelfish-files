@@ -30,7 +30,7 @@ function imap(shortcut, command)
 end
 
 nmap("<C-S>", ":nohlsearch<CR>")
-imap("<C-S>", "<ESC>:nohlsearch<CR>i")
+imap("<C-S>", "<ESC>:nohlsearch<CR>a")
 nmap("j", "gj")
 nmap("k", "gk")
 
