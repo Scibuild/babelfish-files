@@ -49,6 +49,7 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [ ];
+    shell = pkgs.nushell;
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -56,7 +57,8 @@
     vim
     neovim
     wget
-
+    zsh
+    
     wl-clipboard
   ];
 

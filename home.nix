@@ -48,7 +48,7 @@ in
       "Super+Shift ${toString (i + 1)}" = "set-view-tags ${toString (bitshift 1 i)}";
     };
     tagKeys = foldl' (acc: x: acc // x) {} 
-	    (genList (x: mkTagKeys x) 8);
+      (genList (x: mkTagKeys x) 8);
     
   in {
     enable = true;
@@ -58,16 +58,16 @@ in
       map = {
         normal = {
           "Super Q" = "close";
-	  "Super+Shift E" = "exit";
+          "Super+Shift E" = "exit";
           "Super Return" = "spawn foot";
           "Super F" = "toggle-fullscreen";
 
-	  "Super K" = "focus-view up";
-	  "Super J" = "focus-view down";
-	  "Super H" = "focus-view left";
-	  "Super L" = "focus-view right";
-	  "Super+Shift J" = "swap next";
-	  "Super+Shift K" = "swap previous";
+          "Super K" = "focus-view up";
+          "Super J" = "focus-view down";
+          "Super H" = "focus-view left";
+          "Super L" = "focus-view right";
+          "Super+Shift J" = "swap next";
+          "Super+Shift K" = "swap previous";
         } // tagKeys;
       };
       map-pinter = { 
@@ -104,6 +104,12 @@ in
       fetch.prune = true;
       pull.rebase = true;
     };
+  };
+
+  programs.nushell = {
+    enable = true;
+    configFile.source = ./config/nushell/config.nu;
+    envFile.source = ./config/nushell/env.nu;
   };
 
   programs.kitty = {
