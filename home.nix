@@ -6,6 +6,23 @@ let
     ripgrep
     ripgrep-all
     ncdu
+    htop
+    neofetch
+    qjackctl
+    zoom-us
+    discord
+#     dropbox-cli
+#     dropbox
+    maestral
+
+    brightnessctl
+    grim
+    slurp
+
+    typst
+    libreoffice-qt
+
+    qalculate-qt
   ];
 in
 {
@@ -48,7 +65,7 @@ in
       "Super+Shift ${toString (i + 1)}" = "set-view-tags ${toString (bitshift 1 i)}";
     };
     tagKeys = foldl' (acc: x: acc // x) {} 
-      (genList (x: mkTagKeys x) 8);
+      (genList (x: mkTagKeys (x - 1)) 10);
     
   in {
     enable = true;
@@ -56,6 +73,13 @@ in
       border-width = 2;
       declare-mode = [ "normal" ];
       map = {
+        "-repeat".normal = {
+          "None XF86AudioRaiseVolume"  = "spawn 'pamixer -i 5'";
+          "None XF86AudioLowerVolume"  = "spawn 'pamixer -d 5'";
+
+          "None XF86MonBrightnessUp"   = "spawn 'brightnessctl set +5%'";
+          "None XF86MonBrightnessDown" = "spawn 'brightnessctl set 5%-'";
+        };
         normal = {
           "Super Q" = "close";
           "Super+Shift E" = "exit";
@@ -68,9 +92,16 @@ in
           "Super L" = "focus-view right";
           "Super+Shift J" = "swap next";
           "Super+Shift K" = "swap previous";
+
+          "Super Space" = "spawn 'rofi -show drun'";
+
+          "Super+Shift Y" = 
+            "spawn 'sh -c '\"'\"'grim -g \"$(slurp)\" - | wl-copy -t image/png'\"'\"";
+
+          "None XF86AudioMute"         = "spawn 'pamixer --toggle-mute'";
         } // tagKeys;
       };
-      map-pinter = { 
+      map-pointer = { 
         normal = {
           "Super BTN_LEFT" = "move-view";
           "Super BTN_RIGHT" = "resize-view";
@@ -80,9 +111,24 @@ in
       keyboard-layout = "-options caps:escape,compose:ralt us";
       set-repeat = "50 300";
       default-layout = "rivertile";
+      hide-cursor.when-typing = true;
+      input = {
+        "pointer-2362-628-PIXA3854:00_093A:0274_Touchpad" = {
+          click-method = "clickfinger";
+          tap = false;
+          pointer-accel = 0.8;
+          events = true;
+          accel-profile = "flat";
+          natural-scroll = true;
+          scroll-factor = 0.3;
+          tap-button-map = "left-right-middle";
+          scroll-method = "two-finger";
+        };
+      };
     };
     extraConfig = ''
       rivertile -view-padding 6 -outer-padding 6 &
+      waybar &
     '';
   };
 
@@ -113,6 +159,16 @@ in
   };
 
   programs.kitty = {
+    enable = true;
+  };
+
+  programs.waybar = {
+    enable = true;
+  };
+
+
+# Probably will change
+  programs.rofi = {
     enable = true;
   };
 }
