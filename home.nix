@@ -38,6 +38,13 @@ in
       MANPAGER = "nvim +Man!";
       MANWIDTH = "72";
     };
+
+    pointerCursor = {
+      name = "phinger-cursors-dark";
+      package = pkgs.phinger-cursors;
+      size = 32;
+      gtk.enable = true;
+    };
   };
 
   programs.neovim = {
