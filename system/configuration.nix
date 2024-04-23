@@ -60,6 +60,9 @@
     zsh
     
     wl-clipboard
+
+    pavucontrol
+    pamixer
   ];
 
   programs.neovim = {
