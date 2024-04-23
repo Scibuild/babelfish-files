@@ -1,0 +1,11 @@
+
+Kitty
+Fonts
+Typst
+Libreoffice
+more river config
+bar (at least fix the fonts)
+music with mpd and ncmpcpp
+scrolling in firefox
+passwords and pgp keys
+vim
