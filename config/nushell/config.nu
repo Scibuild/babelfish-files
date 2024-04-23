@@ -162,7 +162,7 @@ $env.config = {
         # abbreviated_row_count: 10
     }
 
-    error_style: "plain" # "fancy" or "plain" for screen reader-friendly error messages
+    error_style: "fancy" # "fancy" or "plain" for screen reader-friendly error messages
 
     # datetime_format determines what a datetime rendered in the shell would look like.
     # Behavior without this configuration point will be to "humanize" the datetime display,
