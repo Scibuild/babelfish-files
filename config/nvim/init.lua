@@ -13,6 +13,11 @@ vim.opt.showcmd = false
 vim.opt.mouse = 'a'
 vim.opt.termguicolors = true
 vim.opt.colorcolumn = { 80 }
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+vim.g.seoul256_background = 234
+vim.cmd("colorscheme seoul256")
 
 vim.g.mapleader = ","
 vim.g.maplocalleader = "\\"
@@ -21,13 +26,13 @@ function map(mode, shortcut, command)
   vim.api.nvim_set_keymap(mode, shortcut, command, {noremap = true, silent = true})
 end
 
-function nmap(shortcut, command)
-  map('n', shortcut, command)
+function mk_map(mode) 
+  return function(shortcut, command) map(mode, shortcut, command) end
 end
 
-function imap(shortcut, command)
-  map('i', shortcut, command)
-end
+nmap = mk_map('n')
+imap = mk_map('i')
+vmap = mk_map('v')
 
 nmap("<C-S>", ":nohlsearch<CR>")
 imap("<C-S>", "<ESC>:nohlsearch<CR>a")
@@ -40,6 +45,7 @@ end
 
 nmap("Y", "y$")
 nmap("<C-Y>", "\"+y")
+vmap("<C-Y>", "\"+y")
 nmap("<C-P>", "\"+p")
 
 
