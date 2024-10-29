@@ -1,8 +1,6 @@
-diff --git a/bindings/java/Makefile b/new/bindings/java/Makefile
-index ba9fa56..1fc0d23 100644
---- a/bindigns/java/Makefile
-+++ b/bindings/java/Makefile
-@@ -49,7 +49,7 @@ tests: capstone_class jna
+--- a/bindings/java/Makefile	2024-04-26 18:33:50.565788410 +1000
++++ b/bindings/java/Makefile	2024-04-26 18:34:47.387749041 +1000
+@@ -49,7 +49,7 @@
  		TestPpc.java TestSparc.java TestSystemz.java TestM680x.java
  
  gen_const:

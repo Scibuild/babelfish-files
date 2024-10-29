@@ -106,7 +106,7 @@ include "%L"
 <Multi_key> <l> <e> <a> <d> <s> <t> <o> : "↝" # latex \leadsto
 <Multi_key> <f> <r> <o> <m> <t> <o> : "⇄" # latex \leadsto
 <Multi_key> <backslash> <greater> : "↘"
-
+<Multi_key> <i> <n> <c> : "↪"
 
 # Mathy stuffs
 <Multi_key> <f> <o> <r> <a> <l> <l> : "∀"  # latex \forall
@@ -512,6 +512,13 @@ include "%L"
 <Multi_key> <asciitilde> <l> : "ɫ"
 
 <Multi_key> <bar> <bar> : "∥"
+
+<Multi_key> <question> <space> : "ʔ"
+<Multi_key> <o> <c> : "ɔ"
+<Multi_key> <v> <v> : "ʌ"
+
+<Multi_key> <colon> <parenright> : "⌣"
+<Multi_key> <colon> <parenleft> : "⌢"
 
 # <Multi_key> <greater> <bar> : "⊲"
 # <Multi_key> <bar> <less> : "⊳"

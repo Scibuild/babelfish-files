@@ -40,7 +40,7 @@ let dark_theme = {
     shape_custom: green
     shape_datetime: cyan_bold
     shape_directory: cyan
-    shape_external: cyan
+    shape_external: red
     shape_externalarg: green_bold
     shape_external_resolved: light_yellow_bold
     shape_filepath: cyan
@@ -192,8 +192,8 @@ $env.config = {
     history: {
         max_size: 100_000
         sync_on_enter: true # Enable to share history between multiple sessions, else you have to close the session to write history to file
-        file_format: "plaintext" # "sqlite" or "plaintext"
-        isolation: false # only available with sqlite file_format. true enables history isolation, false disables it. true will allow the history to be isolated to the current session using up/down arrows. false will allow the history to be shared across all sessions.
+        file_format: "sqlite" # "sqlite" or "plaintext"
+        isolation: true # only available with sqlite file_format. true enables history isolation, false disables it. true will allow the history to be isolated to the current session using up/down arrows. false will allow the history to be shared across all sessions.
     }
 
     completions: {
@@ -210,7 +210,7 @@ $env.config = {
     }
 
     filesize: {
-        metric: false # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
+        metric: true # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
         format: "auto" # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, auto
     }
 
@@ -228,23 +228,20 @@ $env.config = {
     use_ansi_coloring: true
     bracketed_paste: true 
     edit_mode: vi
-    shell_integration: false # enables terminal shell integration. Off by default, as some terminals have issues with this.
-    render_right_prompt_on_last_line: false # true or false to enable or disable right prompt to be rendered on last line of the prompt.
-    use_kitty_protocol: false # enables keyboard enhancement protocol implemented by kitty console, only if your terminal support this.
-    highlight_resolved_externals: false # true enables highlighting of external commands in the repl resolved by which.
+    shell_integration: true 
+    render_right_prompt_on_last_line: false 
+    use_kitty_protocol: true 
+    highlight_resolved_externals: true 
     recursion_limit: 50 
 
     plugins: {} # Per-plugin configuration. See https://www.nushell.sh/contributor-book/plugins.html#configuration.
 
     plugin_gc: {
-        # Configuration for plugin garbage collection
         default: {
-            enabled: true # true to enable stopping of inactive plugins
-            stop_after: 10sec # how long to wait after a plugin is inactive to stop it
+            enabled: true 
+            stop_after: 10sec 
         }
         plugins: {
-            # alternate configuration for specific plugins, by name, for example:
-            #
             # gstat: {
             #     enabled: false
             # }

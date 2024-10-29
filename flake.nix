@@ -22,7 +22,8 @@
       inherit system;
       config.allowUnfree = true;
       config.xdg.configHome = configHome;
-      overlays = [];
+      overlays = [ 
+      ];
     };
 
 
