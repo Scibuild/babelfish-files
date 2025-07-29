@@ -1,7 +1,7 @@
 {username, homeDirectory}: { pkgs, lib, ... }: 
 let
   packages = with pkgs; [
-    firefox
+    firefox ungoogled-chromium
     killall
     ripgrep
     ripgrep-all
@@ -10,22 +10,23 @@ let
     neofetch
     qjackctl
     zoom-us
-    discord
-#     dropbox-cli
-#     dropbox
     maestral
     obs-studio
-    davinci-resolve
 
+    autotiling-rs
 
     brightnessctl
     grim
     slurp
+    sway-contrib.grimshot
+    swaynotificationcenter
 
     typst
     libreoffice-qt
-    blender
+    # blender
     imagemagick
+    aseprite
+    puredata
 
     qalculate-qt
 
@@ -35,26 +36,38 @@ let
 
     ranger
 
+    rofi-wayland
+
     # tool for graphical popups in shell scripts
     yad
+    jq
+
+    # for managing displays
+    wdisplays
 
     # lsps, easier to install globally
     zls
     rust-analyzer
     nil
-    typst-lsp
+    tinymist
     glslls
+    #clang-tools
+
+    gcc
 
     zig
     opam
     gnumake
-    clang
+    # clang
     arduino-ide
+    agda 
+    agdaPackages.standard-library
+    # haskellPackages.agda-language-server
 
     man-pages
     linux-manual
 
-    bintools
+    # bintools
     gdb
     ghidra
 
@@ -66,8 +79,18 @@ let
 
     victor-mono
     cascadia-code
+    lmmath
+    lmodern
 
     imhex
+
+    mgba
+    appimage-run
+
+    file
+    ffmpeg
+
+    localsend
 
     (callPackage ./pkgs/riverbsp.nix {})
   ];
@@ -87,82 +110,73 @@ in
 {
   programs.home-manager.enable = true;
 
-  nixpkgs.overlays = [
-      (final: prev: { 
-        river = prev.river.overrideAttrs (old: { 
-            src = prev.fetchFromGitea {
-              domain = "codeberg.org";
-              owner = "river";
-              repo = "river";
-              rev = "5262a4c5a61f547acd29560f1af9cf342b9958ae";
-              fetchSubmodules = true;
-              hash = "";
-            };
-          }); 
-        }) 
+  # nixpkgs.overlays = [
 
-      (self: super: {
-        glfw = super.glfw.overrideAttrs (finalAttrs: previousAttrs:
-          with super; {
-            postPatch = lib.optionalString stdenv.isLinux ''
-              substituteInPlace src/wl_init.c \
-                --replace-fail "libxkbcommon.so.0" "${lib.getLib libxkbcommon}/lib/libxkbcommon.so.0" \
-                --replace-fail "libdecor-0.so.0" "${lib.getLib libdecor}/lib/libdecor-0.so.0" \
-                --replace-fail "libwayland-client.so.0" "${lib.getLib wayland}/lib/libwayland-client.so.0" \
-                --replace-fail "libwayland-cursor.so.0" "${lib.getLib wayland}/lib/libwayland-cursor.so.0" \
-                --replace-fail "libwayland-egl.so.1" "${lib.getLib wayland}/lib/libwayland-egl.so.1"
-            '';
-          });
-        imhex = super.imhex.overrideAttrs (finalAttrs: previousAttrs: let
-          patterns_version = "1.35.3";
-          patterns_src = super.fetchFromGitHub {
-            owner = "WerWolv";
-            repo = "ImHex-Patterns";
-            rev = "ImHex-v${patterns_version}";
-            hash = "sha256-h86qoFMSP9ehsXJXOccUK9Mfqe+DVObfSRT4TCtK0rY=";
-          };
-        in rec {
-          version = "1.35.3";
-          src = super.fetchFromGitHub {
-            fetchSubmodules = true;
-            owner = "WerWolv";
-            repo = previousAttrs.pname;
-            rev = "v${version}";
-            hash = "sha256-8vhOOHfg4D9B9yYgnGZBpcjAjuL4M4oHHax9ad5PJtA=";
-          };
-          nativeBuildInputs = with super; [
-            autoPatchelfHook
-            cmake
-            llvm
-            python3
-            perl
-            pkg-config
-            rsync
-          ];
-          autoPatchelfIgnoreMissingDeps = ["*.hexpluglib"];
-          appendRunpaths = [
-            (super.lib.makeLibraryPath [super.libGL])
-            "${placeholder "out"}/lib/imhex/plugins"
-          ];
-          postInstall = ''
-            mkdir -p $out/share/imhex
-            rsync -av --exclude="*_schema.json" ${patterns_src}/{constants,encodings,includes,magic,patterns} $out/share/imhex
-          '';
-        });
-      })
+  #     (self: super: {
+  #       glfw = super.glfw.overrideAttrs (finalAttrs: previousAttrs:
+  #         with super; {
+  #           postPatch = lib.optionalString stdenv.isLinux ''
+  #             substituteInPlace src/wl_init.c \
+  #               --replace-fail "libxkbcommon.so.0" "${lib.getLib libxkbcommon}/lib/libxkbcommon.so.0" \
+  #               --replace-fail "libdecor-0.so.0" "${lib.getLib libdecor}/lib/libdecor-0.so.0" \
+  #               --replace-fail "libwayland-client.so.0" "${lib.getLib wayland}/lib/libwayland-client.so.0" \
+  #               --replace-fail "libwayland-cursor.so.0" "${lib.getLib wayland}/lib/libwayland-cursor.so.0" \
+  #               --replace-fail "libwayland-egl.so.1" "${lib.getLib wayland}/lib/libwayland-egl.so.1"
+  #           '';
+  #         });
+  #       imhex = super.imhex.overrideAttrs (finalAttrs: previousAttrs: let
+  #         patterns_version = "1.35.3";
+  #         patterns_src = super.fetchFromGitHub {
+  #           owner = "WerWolv";
+  #           repo = "ImHex-Patterns";
+  #           rev = "ImHex-v${patterns_version}";
+  #           hash = "sha256-h86qoFMSP9ehsXJXOccUK9Mfqe+DVObfSRT4TCtK0rY=";
+  #         };
+  #       in rec {
+  #         version = "1.35.3";
+  #         src = super.fetchFromGitHub {
+  #           fetchSubmodules = true;
+  #           owner = "WerWolv";
+  #           repo = previousAttrs.pname;
+  #           rev = "v${version}";
+  #           hash = "sha256-8vhOOHfg4D9B9yYgnGZBpcjAjuL4M4oHHax9ad5PJtA=";
+  #         };
+  #         nativeBuildInputs = with super; [
+  #           autoPatchelfHook
+  #           cmake
+  #           llvm
+  #           python3
+  #           perl
+  #           pkg-config
+  #           rsync
+  #         ];
+  #         autoPatchelfIgnoreMissingDeps = ["*.hexpluglib"];
+  #         appendRunpaths = [
+  #           (super.lib.makeLibraryPath [super.libGL])
+  #           "${placeholder "out"}/lib/imhex/plugins"
+  #         ];
+  #         postInstall = ''
+  #           mkdir -p $out/share/imhex
+  #           rsync -av --exclude="*_schema.json" ${patterns_src}/{constants,encodings,includes,magic,patterns} $out/share/imhex
+  #         '';
+  #       });
+  #     })
 
-      ];
+  #     ];
   home = {
     inherit username homeDirectory packages;
     stateVersion = "24.05";
     file.".XCompose".source = ./config/xcompose/.XCompose;
     file.".config/nvim".source = ./config/nvim;
+    file.".config/sway".source = ./config/sway;
 
     sessionVariables = {
       MANPAGER = "nvim +Man!";
       MANWIDTH = "72";
       _JAVA_AWT_WM_NONREPARENTING= "1";
       AWT_TOOLKIT="MToolkit";
+      DEVKITPRO="/home/alex/software/devkitPro/buildscripts-devkitPPC_r46.1/opt/devkitpro";
+      DEVKITARM="/home/alex/software/devkitPro/buildscripts-devkitPPC_r46.1/opt/devkitpro/devkitARM";
     };
 
     pointerCursor = {
@@ -191,6 +205,8 @@ in
       cmp-path
       cmp-nvim-lsp
       nvim-surround
+      Coqtail
+      coq-lsp-nvim
 
       (nvim-treesitter.withPlugins (p: 
       let 
@@ -208,6 +224,8 @@ in
       [ p.c p.cpp p.glsl p.java p.lua p.nix nu_grammar p.rust p.typst p.vim p.vimdoc p.zig ]))
     ];
   };
+
+  programs.emacs.enable = true;
 
 
   wayland.windowManager.river = 
@@ -345,19 +363,20 @@ in
     enable = true;
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
-    dotDir = ".config/zsh";
+    dotDir = "/home/alex/.config/zsh";
     history = {
       share = true;
       ignoreAllDups = true;
-      size = 1000;
-      path = ".cache/zsh_histfile";
+      size = 50000;
+      path = "/home/alex/.cache/zsh_histfile";
     };
     autocd = true;
-    initExtra = builtins.readFile ./config/zsh/.zshrc;
+    initContent = builtins.readFile ./config/zsh/.zshrc;
     shellAliases = {
       cdc = "cd ~/babelfish-files/";
       cdh = "cd ~/dropbox-maestral/Alex_home/";
       cdu = "cd ~/dropbox-maestral/Alex_University/";
+      ffmpeg = "ffmpeg -hide_banner";
     };
   };
 
@@ -367,7 +386,7 @@ in
       touch_scroll_multiplier = "8.0";
       wheel_scroll_multiplier = "8.0";
       enable_audio_bell = false;
-      font_features = "CascadiaMonoNF-Regular +calt +ss01 + ss19";
+      font_features = "CascadiaMonoNF-Regular +calt +ss01 +ss19";
       cursor_blink_interval = 0;
     };
     font.name = "Cascadia Mono NF";
@@ -381,10 +400,10 @@ in
       height = 32;
       spacing = 4;
       modules-left = [
-        "river/tags" "mpd"
+        "sway/workspaces" "mpd"
       ];
       modules-center = [
-        "river/window"
+        "sway/window"
       ];
       modules-right = [
         "tray"
@@ -394,9 +413,6 @@ in
         "battery"
         "clock"
       ];
-      "river/tags" = {
-        set-tags = builtins.map (bitshift 1) river-tags;
-      };
       network = {
         format-wifi = "{essid} ({signalStrength}%) ";
         format-ethernet = " {ifname}";
@@ -438,11 +454,6 @@ in
   };
 
 
-# Probably will change
-  programs.rofi = {
-    enable = true;
-  };
-
   programs.ssh.enable = true;
   programs.ssh.matchBlocks = {
     comp3703 = {
@@ -464,7 +475,7 @@ in
   programs.vscode = {
     enable = true;
     package = pkgs.vscode;
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       vscodevim.vim
       jdinhlife.gruvbox
       ms-vscode-remote.remote-ssh
@@ -485,7 +496,7 @@ in
   };
 
   programs.ncmpcpp = {
-    enable = true;
+    enable = false;
     bindings = [
       { key = "j"; command = "scroll_down"; }
       { key = "J"; command = ["select_item" "scroll_down"]; }
@@ -513,6 +524,22 @@ in
   programs.gpg.enable = true;
   services.gpg-agent = {
     enable = true;
-    pinentryPackage = pkgs.pinentry-curses;
+    pinentry.package = pkgs.pinentry-curses;
   };
+
+
+# Not working
+  systemd.user.services.maestral-start = {
+    Unit = {
+      Description = "Start maestral on startup";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.maestral}/bin/maestral start -f -v";
+      Type = "simple";
+    };
+  };
+
 }

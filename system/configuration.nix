@@ -5,10 +5,12 @@
 { pkgs, ... }:
 
 {
-  imports =
-    [ ./hardware-configuration.nix ];
+  imports = [ ./hardware-configuration.nix ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
@@ -18,80 +20,85 @@
 
   services.fwupd.enable = true;
 
-#  boot.kernelParams = [
-#    amdgpu.sg_display=0;
-#  ];
+  #  boot.kernelParams = [
+  #    amdgpu.sg_display=0;
+  #  ];
 
   networking.hostName = "babelfish"; # Define your hostname.
 
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
+  # time.timeZone = "Asia/Hong_Kong";
   time.timeZone = "Australia/Sydney";
   i18n.defaultLocale = "en_US.UTF-8";
 
   console.useXkbConfig = true; # use xkb.options in tty.
 
-  nixpkgs.overlays = [
-      (final: prev: { 
-        river = prev.river.overrideAttrs (old: { 
-          src = prev.fetchFromGitea {
-            domain = "codeberg.org";
-            owner = "river";
-            repo = "river";
-            rev = "5262a4c5a61f547acd29560f1af9cf342b9958ae";
-            fetchSubmodules = true;
-            hash = "sha256-BeVtwvmgJLhecavmeZSWWkBQ4sy+vgS9z6+sJgvFNaI=";
-          }; 
-        }); 
-#         python312 = (prev.python312.overrideAttrs (old: {
-#           src = prev.fetchFromGitHub {
-#             owner = "Scibuild";
-#             repo = "cpython";
-#             fetchSubmodules = true;
-#             rev = "refs/heads/v312";
-#             hash = "sha256-acPtGr3+ZU69P8AZJAUzc88RYoASSFEKA0iO/3bUwMo=";
-#           };
-#         })).override { 
-#           packageOverrides = py_final: py_prev: {
-#             capstone = py_prev.capstone.overrideAttrs (old: { 
-#               disabled = false; 
-#               # format = "wheel";
-#               patches = [ ../patches/python312.capstone.patch ];
-#               nativeBuildInputs = [ py_prev.setuptools ];
-#             });
-#             unicorn = py_prev.unicorn.overrideAttrs (old: { 
-#               format = "wheel";
-#               nativeBuildInputs = [ py_prev.setuptools ];
-#             });
-#          };
-#        };
-        python310 = (prev.python310.overrideAttrs (old: {
-          src = prev.fetchFromGitHub {
-            owner = "Scibuild";
-            repo = "cpython";
-            rev = "refs/heads/v310";
-            hash = "sha256-ARxxpfvFrv7wopzFMD2B0leUXTVosWWZdAa2ARzD1ww=";
-          };
-        })).override {
-          packageOverrides = py_final: py_prev: {
-            pip = py_prev.pip.overrideAttrs (old: { nativeBuildInputs = old.nativeBuildInputs ++ [ py_prev.tomli ]; });
-            furo = py_prev.furo.overrideAttrs (old: { nativeBuildInputs = old.nativeBuildInputs ++ [ py_prev.tomli ]; });
-          };
-        };
-      }) 
-  ];
+  # nixpkgs.overlays = [
+  #     (final: prev: {
+  #river = prev.river.overrideAttrs (old: {
+  #  src = prev.fetchFromGitea {
+  #    domain = "codeberg.org";
+  #    owner = "river";
+  #    repo = "river";
+  #    rev = "1b5dd21ee610b30d13c9165dfde23989c5e97e8d";
+  #    fetchSubmodules = true;
+  #    hash = "sha256-uhgvV+GTxeTJNxZ4lUpqPlaonnon7MD/qFi3a6OU5t0=";
+  #  };
+  #});
+  #         python312 = (prev.python312.overrideAttrs (old: {
+  #           src = prev.fetchFromGitHub {
+  #             owner = "Scibuild";
+  #             repo = "cpython";
+  #             fetchSubmodules = true;
+  #             rev = "refs/heads/v312";
+  #             hash = "sha256-acPtGr3+ZU69P8AZJAUzc88RYoASSFEKA0iO/3bUwMo=";
+  #           };
+  #         })).override {
+  #           packageOverrides = py_final: py_prev: {
+  #             capstone = py_prev.capstone.overrideAttrs (old: {
+  #               disabled = false;
+  #               # format = "wheel";
+  #               patches = [ ../patches/python312.capstone.patch ];
+  #               nativeBuildInputs = [ py_prev.setuptools ];
+  #             });
+  #             unicorn = py_prev.unicorn.overrideAttrs (old: {
+  #               format = "wheel";
+  #               nativeBuildInputs = [ py_prev.setuptools ];
+  #             });
+  #          };
+  #        };
+  #       python310 = (prev.python310.overrideAttrs (old: {
+  #         src = prev.fetchFromGitHub {
+  #           owner = "Scibuild";
+  #           repo = "cpython";
+  #           rev = "refs/heads/v310";
+  #           hash = "sha256-ARxxpfvFrv7wopzFMD2B0leUXTVosWWZdAa2ARzD1ww=";
+  #         };
+  #       })).override {
+  #         packageOverrides = py_final: py_prev: {
+  #           pip = py_prev.pip.overrideAttrs (old: { nativeBuildInputs = old.nativeBuildInputs ++ [ py_prev.tomli ]; });
+  #           furo = py_prev.furo.overrideAttrs (old: { nativeBuildInputs = old.nativeBuildInputs ++ [ py_prev.tomli ]; });
+  #         };
+  #       };
+  #     })
+  # ];
 
   programs.river.enable = true;
   programs.sway.enable = true;
+
+  # services.xserver.enable = true;
+  # services.displayManager.sddm.enable = true;
+  # services.desktopManager.plasma6.enable = true;
 
   xdg.portal.wlr.enable = true;
   xdg.portal.enable = true;
   xdg.portal.wlr.settings = {
     preferred = {
-      "org.freedesktop.impl.portal.ScreenCast"="wlr";
-      "org.freedesktop.impl.portal.Screenshot"="wlr";
+      "org.freedesktop.impl.portal.ScreenCast" = "wlr";
+      "org.freedesktop.impl.portal.Screenshot" = "wlr";
     };
   };
 
@@ -102,7 +109,7 @@
   # services.printing.enable = true;
 
   # Enable sound.
-  sound.enable = true;
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     pulse.enable = true;
@@ -110,28 +117,26 @@
     alsa.support32Bit = true;
     jack.enable = true;
   };
+  # sound.enable = true;
 
   services.libinput.enable = true;
 
   users.users.alex = {
     isNormalUser = true;
-    extraGroups = [ "wireshark" "wheel" "vboxusers" "dialout" "libvirtd" ];
+    extraGroups = [
+      "wireshark"
+      "wheel"
+      "vboxusers"
+      "dialout"
+      "libvirtd"
+      "audio"
+    ];
     packages = with pkgs; [ maestral ];
     shell = pkgs.zsh;
   };
   programs.zsh.enable = true;
 
-# Not working
-  systemd.user.services.maestral-start = {
-    enable = true;
-    description = "Start maestral on startup";
-    serviceConfig.ExecStart = "maestral start";
-    serviceConfig.Type = "simple";
-    wantedBy = [ "default.target" ];
-  };
-
-
-  services.globalprotect.enable = true;
+  # services.globalprotect.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
@@ -139,7 +144,7 @@
     neovim
     wget
     zsh
-    
+
     wl-clipboard
 
     pavucontrol
@@ -149,7 +154,9 @@
 
     wireshark
     sshfs
-    globalprotect-openconnect
+    # globalprotect-openconnect
+    gpclient
+    gpauth
     # kdePackages.polkit-kde-agent-1
     polkit_gnome
     networkmanagerapplet
@@ -163,7 +170,12 @@
 
     qemu
 
-    (python310.withPackages (p: [ p.pwntools p.z3-solver p.python-lsp-server p.pylsp-mypy p.weasyprint p.virtualenv p.pyaml p.pycrypto p.gmpy2 ]))
+    # (python310.withPackages (p: [
+    #   p.pwntools p.z3-solver
+    #   # p.python-lsp-server p.pylsp-mypy
+    #   p.weasyprint
+    #   p.virtualenv p.pyaml p.pycrypto p.gmpy2
+    #   ]))
     pango
     # python311Packages.pwntools
   ];
@@ -181,7 +193,7 @@
   fonts.packages = with pkgs; [
     noto-fonts
     noto-fonts-emoji
-    noto-fonts-cjk
+    noto-fonts-cjk-sans
     liberation_ttf
     fira-code
     fira-code-symbols
@@ -203,7 +215,10 @@
   services.openssh.enable = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.firewall.allowedTCPPorts = [
+    22
+    8000
+  ];
   networking.firewall.allowedUDPPorts = [ ];
 
   programs.wireshark.enable = true;
@@ -218,11 +233,49 @@
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth.settings = {
+    General = {
+      Privacy = "device";
+      JustWorksReparing = "always";
+      FastConnectable = "true";
+    };
+  };
   services.blueman.enable = true;
 
+  hardware.xpadneo.enable = true;
+
   programs.steam.enable = true;
-  services.joycond.enable = true;
-  
+  hardware.steam-hardware.enable = true;
+
+  services.udev.enable = true;
+
+  security.pam.loginLimits = [
+    {
+      domain = "@audio";
+      item = "memlock";
+      type = "-";
+      value = "unlimited";
+    }
+    {
+      domain = "@audio";
+      item = "rtprio";
+      type = "-";
+      value = "99";
+    }
+    {
+      domain = "@audio";
+      item = "nofile";
+      type = "soft";
+      value = "99999";
+    }
+    {
+      domain = "@audio";
+      item = "nofile";
+      type = "hard";
+      value = "99999";
+    }
+  ];
+
   programs.nix-ld.enable = true;
   programs.nix-ld.libraries = with pkgs; [
     stdenv.cc.cc
@@ -269,6 +322,10 @@
     libxkbcommon
   ];
 
+  services.udev.extraRules = ''
+    SUBSYSTEM=="pci", ATTR{power/control}="auto"
+  '';
+
   # powerManagement.cpuFreqGovernor = "ondemand";
 
   # Or disable the firewall altogether.
@@ -282,4 +339,3 @@
   system.stateVersion = "23.11"; # Don't change
 
 }
-

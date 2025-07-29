@@ -16,6 +16,7 @@ vim.opt.colorcolumn = { 80 }
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.guicursor = vim.opt.guicursor._value .. ",a:blinkon0"
+vim.opt.autoread = true
 
 
 vim.g.c_syntax_for_h = 1
@@ -76,6 +77,18 @@ nmap("<C-P>", "\"+p")
 nmap("<C-S-P>", "\"+P")
 
 vim.filetype.add({extension = { typ = 'typst', vert = 'glsl', frag = 'glsl' }})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    callback = function()
+        local mode = vim.api.nvim_get_mode().mode
+        local filetype = vim.bo.filetype
+        if vim.bo.modified == true and mode == 'n' and filetype ~= "oil" then
+            vim.cmd('lua vim.lsp.buf.format()')
+        else
+        end
+    end
+})
+
 
 -- PLUGINS
 
@@ -138,22 +151,37 @@ local lsp_setup = {
     nmap('<space>r', vim.lsp.buf.rename)
     nmap('<space>a', vim.lsp.buf.code_action)
     nmap('<space>f', vim.lsp.buf.format)
+    nmap('<space>e', vim.diagnostic.open_float)
 
     nmap('<space>d', vim.diagnostic.open_float)
     nmap('gn', vim.diagnostic.goto_next)
     nmap('gN', vim.diagnostic.goto_prev)
+
+    vim.diagnostic.config({
+      virtual_text = false
+    })
+
   end,
   flags = { debounce_changes = 150 },
   capabilities = capabilities,
+  offset_encoding = "utf-8",
+  settings = {
+    merlinDiagnostics = { enable = true },
+  },
 }
 
 
-require('lspconfig').zls.setup(lsp_setup)
-require('lspconfig').rust_analyzer.setup(lsp_setup)
-require('lspconfig').nil_ls.setup(lsp_setup)
-require('lspconfig').typst_lsp.setup(lsp_setup)
-require('lspconfig').ocamllsp.setup(lsp_setup)
-require('lspconfig').pylsp.setup(lsp_setup)
+local lspconfig = require('lspconfig')
+lspconfig.zls.setup(lsp_setup)
+lspconfig.rust_analyzer.setup(lsp_setup)
+lspconfig.nil_ls.setup(lsp_setup)
+lspconfig.tinymist.setup(lsp_setup)
+lspconfig.ocamllsp.setup(lsp_setup)
+lspconfig.pylsp.setup(lsp_setup)
+require('coq-lsp').setup({lsp = lsp_setup})
+
+-- vim.g.loaded_coqtail = 1
+-- vim.g.coqtail.supported = 0
 
 require('lspconfig').glslls.setup(vim.tbl_deep_extend('force', lsp_setup, { 
     cmd = { 'glslls', '--stdin', '--target-env', 'opengl' },

@@ -5,13 +5,20 @@ export TERM=xterm-256color
 autoload -U colors && colors
 
 autoload -Uz prompt
-PROMPT="%B%{$fg[blue]%}; %b"
+if [[ -v IN_NIX_SHELL ]]
+then
+  PROMPT="%B%{$fg[blue]%}# nix shell"$'\n'"; %b"
+else
+  PROMPT="%B%{$fg[blue]%}; %b"
+fi
 
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
 
 setopt extendedglob
 unsetopt beep
+
+autoload zmv
 
 # fpath=($HOME/.local/bin/completions $fpath)
 
@@ -28,10 +35,10 @@ zstyle ':completion:*' menu select=2
 eval "$(dircolors -b)"
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
 zstyle ':completion:*' menu select=long
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
 
@@ -75,6 +82,7 @@ alias ls="ls --color=auto --hyperlink=auto"
 
 # export PATH="$HOME/.local/bin:$PATH"
 # export PATH="$HOME/lab10/bin:$PATH"
+export PATH="$HOME/software/devkitPro/buildscripts-devkitPPC_r46.1/opt/devkitpro/tools/bin:$PATH"
 
 export AFL_PIZZA_MODE=1
 
