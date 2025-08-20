@@ -1,7 +1,7 @@
-{username, homeDirectory}: { pkgs, lib, ... }: 
+{username, homeDirectory}: { pkgs, lib, config, ... }: 
 let
   packages = with pkgs; [
-    firefox ungoogled-chromium
+    # firefox ungoogled-chromium
     killall
     ripgrep
     ripgrep-all
@@ -22,10 +22,11 @@ let
     swaynotificationcenter
 
     typst
+    typstyle
     libreoffice-qt
     # blender
     imagemagick
-    aseprite
+    # aseprite
     puredata
 
     qalculate-qt
@@ -60,9 +61,12 @@ let
     gnumake
     # clang
     arduino-ide
-    agda 
-    agdaPackages.standard-library
+    # agda 
+    # agdaPackages.standard-library
     # haskellPackages.agda-language-server
+    idris2
+    idris2Packages.idris2Lsp
+    idris2Packages.idris2Api
 
     man-pages
     linux-manual
@@ -81,6 +85,8 @@ let
     cascadia-code
     lmmath
     lmodern
+    oswald
+    noto-fonts
 
     imhex
 
@@ -90,7 +96,10 @@ let
     file
     ffmpeg
 
-    localsend
+    # localsend
+
+    # direnv
+    # nix-direnv
 
     (callPackage ./pkgs/riverbsp.nix {})
   ];
@@ -106,6 +115,8 @@ let
        bitshift (x / 2) (y + 1);
 
   river-tags = builtins.genList (x: x) 9;
+
+  mk-symlink = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/babelfish-files/${path}";
 in
 {
   programs.home-manager.enable = true;
@@ -166,9 +177,11 @@ in
   home = {
     inherit username homeDirectory packages;
     stateVersion = "24.05";
-    file.".XCompose".source = ./config/xcompose/.XCompose;
-    file.".config/nvim".source = ./config/nvim;
-    file.".config/sway".source = ./config/sway;
+    file."/home/alex/.XCompose".source = mk-symlink "config/xcompose/.XCompose";
+    file."/home/alex/.config/nvim".source = mk-symlink "config/nvim";
+    file."/home/alex/.config/sway".source = mk-symlink "config/sway";
+
+
 
     sessionVariables = {
       MANPAGER = "nvim +Man!";
@@ -186,6 +199,8 @@ in
       gtk.enable = true;
     };
   };
+
+  programs.firefox.enable = true;
 
   programs.neovim = {
     enable = true;
@@ -207,6 +222,9 @@ in
       nvim-surround
       Coqtail
       coq-lsp-nvim
+      idris2-nvim
+      nui-nvim
+      typst-preview-nvim
 
       (nvim-treesitter.withPlugins (p: 
       let 
@@ -223,6 +241,65 @@ in
       in
       [ p.c p.cpp p.glsl p.java p.lua p.nix nu_grammar p.rust p.typst p.vim p.vimdoc p.zig ]))
     ];
+  };
+
+  programs.helix = {
+    enable = true;
+    languages = {
+      language-server.tinymist = {
+        command = "${pkgs.tinymist}/bin/tinymist";
+        config = {
+          exportPdf = "onSave";
+        };
+      };
+      language = [
+          {
+            name = "typst";
+            auto-format = true;
+            file-types = [ "typ" ];
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+            formatter.command = "${pkgs.typstyle}/bin/typstyle";
+            language-servers = [ "tinymist" ];
+          }
+      ]; 
+    };
+    settings = {
+      theme = "gruvbox";
+      editor = {
+        line-number = "relative";
+        color-modes = true;
+        smart-tab.enable = false;
+        soft-wrap.enable = true;
+        cursor-shape = {
+          insert = "block";
+          normal = "block";
+          select = "underline";
+        };
+        lsp.display-messages = true;
+        search.smart-case = false;
+        bufferline = "multiple";
+        jump-label-alphabet = "ghfjdksla;tyvbrucneixmwoz";
+        inline-diagnostics.cursor-line = "warning";
+      };
+      keys = {
+        normal = {
+          X = [
+            "extend_line_up"
+            "extend_to_line_bounds"
+          ];
+          A-j = "insert_newline";
+          ret = "goto_word";
+          C-h = "goto_previous_buffer";
+          C-l = "goto_next_buffer";
+        };
+        insert = {
+          C-h = "signature_help";
+        };
+      }; 
+    };
   };
 
   programs.emacs.enable = true;
@@ -363,7 +440,7 @@ in
     enable = true;
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
-    dotDir = "/home/alex/.config/zsh";
+    dotDir = ".config/zsh";
     history = {
       share = true;
       ignoreAllDups = true;
@@ -496,7 +573,7 @@ in
   };
 
   programs.ncmpcpp = {
-    enable = false;
+    enable = true;
     bindings = [
       { key = "j"; command = "scroll_down"; }
       { key = "J"; command = ["select_item" "scroll_down"]; }
@@ -542,4 +619,11 @@ in
     };
   };
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    enableZshIntegration = true;
+  };
+
+  fonts.fontconfig.enable = true;
 }

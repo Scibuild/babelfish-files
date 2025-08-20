@@ -134,15 +134,14 @@ cmp.setup.cmdline({ '/', '?' }, {
 --   matching = { disallow_symbol_nonprefix_matching = false },
 -- })
 
-local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local lsp_setup = {
-  on_attach = function(client, buf_number) 
-    vim.api.nvim_buf_set_option(buf_number, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-    local opts = { noremap = true, silent = true, buffer = buf_number }
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    -- vim.api.nvim_buf_set_option(buf_number, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+    local opts = { noremap = true, silent = true, buffer = args.buf }
     local nmap = function(key, cmd) vim.keymap.set('n', key, cmd, opts) end
     nmap('K', vim.lsp.buf.hover)
-    print(buf_number)
     nmap('gd', vim.lsp.buf.definition)
     nmap('gi', vim.lsp.buf.implementation)
     nmap('gr', vim.lsp.buf.references)
@@ -160,38 +159,62 @@ local lsp_setup = {
     vim.diagnostic.config({
       virtual_text = false
     })
+  end
+})
 
-  end,
-  flags = { debounce_changes = 150 },
-  capabilities = capabilities,
-  offset_encoding = "utf-8",
-  settings = {
-    merlinDiagnostics = { enable = true },
+-- local lsp_setup = {
+--   on_attach = function(client, buf_number) 
+-- 
+--   end,
+--   flags = { debounce_changes = 150 },
+--   capabilities = capabilities,
+--   offset_encoding = "utf-8",
+--   settings = {
+--     merlinDiagnostics = { enable = true },
+--   },
+-- }
+
+
+vim.lsp.enable("zls")
+vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("nil_ls")
+vim.lsp.enable("ocamllsp")
+vim.lsp.enable("pylsp")
+vim.lsp.enable("idris2_lsp")
+
+vim.lsp.enable("tinymist")
+vim.lsp.config('tinymist', {
+  capabilities = {
+    offsetEncoding = {"utf-16"},
   },
-}
+  settings = {
+    -- tinymist = {
+    formatterMode = "typstyle",
+    -- exportPdf = "onSave",
+    -- outputPath = "$root/target/$dir/$name",
 
 
-local lspconfig = require('lspconfig')
-lspconfig.zls.setup(lsp_setup)
-lspconfig.rust_analyzer.setup(lsp_setup)
-lspconfig.nil_ls.setup(lsp_setup)
-lspconfig.tinymist.setup(lsp_setup)
-lspconfig.ocamllsp.setup(lsp_setup)
-lspconfig.pylsp.setup(lsp_setup)
+    -- }
+  }
+})
+
 require('coq-lsp').setup({lsp = lsp_setup})
+require('idris2').setup({})
+
+require('typst-preview').setup({dependencies_bin = {['tinymist'] = 'tinymist'}})
 
 -- vim.g.loaded_coqtail = 1
 -- vim.g.coqtail.supported = 0
 
-require('lspconfig').glslls.setup(vim.tbl_deep_extend('force', lsp_setup, { 
-    cmd = { 'glslls', '--stdin', '--target-env', 'opengl' },
-}))
-if vim.fn.executable('clangd') == 1 then
-  require('lspconfig').clangd.setup(lsp_setup)
-end
-if vim.fn.executable('erlang_ls') == 1 then
-  require('lspconfig').erlangls.setup(lsp_setup)
-end
+-- require('lspconfig').glslls.setup(vim.tbl_deep_extend('force', lsp_setup, { 
+--     cmd = { 'glslls', '--stdin', '--target-env', 'opengl' },
+-- }))
+-- if vim.fn.executable('clangd') == 1 then
+--   require('lspconfig').clangd.setup(lsp_setup)
+-- end
+-- if vim.fn.executable('erlang_ls') == 1 then
+--   require('lspconfig').erlangls.setup(lsp_setup)
+-- end
 
 require('nvim-lastplace').setup({
     lastplace_ignore_buftype = {"quickfix", "nofile", "help"},

@@ -20,9 +20,12 @@
 
   services.fwupd.enable = true;
 
-  #  boot.kernelParams = [
-  #    amdgpu.sg_display=0;
-  #  ];
+  boot.kernelParams = [
+    # amdgpu.sg_display=0;
+    "rcutree.enable_rcu_lazy=1"
+    "nohz=on"
+    "nowatchdog"
+  ];
 
   networking.hostName = "babelfish"; # Define your hostname.
 
@@ -325,6 +328,8 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="pci", ATTR{power/control}="auto"
   '';
+  powerManagement.powertop.enable = true;
+  services.power-profiles-daemon.enable = true;
 
   # powerManagement.cpuFreqGovernor = "ondemand";
 

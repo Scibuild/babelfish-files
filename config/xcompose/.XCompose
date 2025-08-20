@@ -520,5 +520,7 @@ include "%L"
 <Multi_key> <colon> <parenright> : "⌣"
 <Multi_key> <colon> <parenleft> : "⌢"
 
+<Multi_key> <e> <a> <r> <s> : "ꗨ"
+
 # <Multi_key> <greater> <bar> : "⊲"
 # <Multi_key> <bar> <less> : "⊳"

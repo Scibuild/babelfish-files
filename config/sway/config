@@ -64,7 +64,7 @@ input type:touchpad {
     tap enabled
     natural_scroll enabled
     middle_emulation enabled
-    scroll_factor 0.1
+    scroll_factor 0.3
     pointer_accel 0.3
     tap disabled
     clickfinger_button_map lrm
@@ -288,7 +288,31 @@ for_window [class="PdWindow"] floating enable
 for_window [class="QjackCtl"] floating enable
 
 
+## Colours
+set $base00 #282828
+set $base01 #3c3836
+set $base02 #504945
+set $base03 #665c54
+set $base04 #d5c4a1
+set $base05 #ebdbb2
+set $base06 #fbf1c7
+set $base07 #ebdbb2
+set $base08 #cc241d
+set $base09 #d65d0e
+set $base0A #d79921
+set $base0B #98971a
+set $base0C #458588
+set $base0D #b16286
+set $base0E #689d6a
+set $base0F #a89984
 
+## Window Colours
+client.focused           $base0A  $base00  $base06  $base0A  $base0A
+client.focused_inactive  $base02  $base00  $base06  $base02  $base02
+client.unfocused         $base01  $base00  $base06  $base01  $base01
+client.urgent            $base07  $base00  $base08  $base07  $base07
+client.placeholder       $base02  $base00  $base06  $base02  $base04
+client.background        $base00
 
 
 include /etc/sway/config.d/*
