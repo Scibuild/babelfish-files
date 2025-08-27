@@ -180,6 +180,7 @@ in
     file."/home/alex/.XCompose".source = mk-symlink "config/xcompose/.XCompose";
     file."/home/alex/.config/nvim".source = mk-symlink "config/nvim";
     file."/home/alex/.config/sway".source = mk-symlink "config/sway";
+    file."/home/alex/.local/share/fonts".source = mk-symlink "config/fonts";
 
 
 
