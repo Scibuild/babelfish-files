@@ -45,6 +45,12 @@ local function mk_map(mode)
   end
 end
 
+local function mk_buf_map(mode) 
+  return function(buf, shortcut, command) 
+    vim.api.nvim_buf_set_keymap(buf, mode, shortcut, command, {noremap = true, silent = true})
+  end
+end
+
 local function mk_mapc(mode) 
   return function(shortcut, command, desc) 
     vim.keymap.set(mode, shortcut, command, { noremap = true, silent = true, desc = desc}) 
@@ -54,6 +60,10 @@ end
 local nmap = mk_map('n')
 local imap = mk_map('i')
 local vmap = mk_map('v')
+
+local nmap_buf = mk_buf_map('n')
+local imap_buf = mk_buf_map('i')
+local vmap_buf = mk_buf_map('v')
 
 local nmap_c = mk_mapc('n')
 local imap_c = mk_mapc('i')
@@ -76,7 +86,7 @@ vmap("<C-Y>", "\"+y")
 nmap("<C-P>", "\"+p")
 nmap("<C-S-P>", "\"+P")
 
-vim.filetype.add({extension = { typ = 'typst', vert = 'glsl', frag = 'glsl' }})
+vim.filetype.add({extension = { typ = 'typst', vert = 'glsl', frag = 'glsl', re = 'reason' }})
 
 vim.api.nvim_create_autocmd("BufWritePre", {
     callback = function()
@@ -89,6 +99,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end
 })
 
+-- vim.wo.foldmethod = 'expr'
+-- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 -- PLUGINS
 
@@ -180,7 +192,8 @@ vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("nil_ls")
 vim.lsp.enable("ocamllsp")
 vim.lsp.enable("pylsp")
-vim.lsp.enable("idris2_lsp")
+vim.lsp.enable("clangd")
+-- vim.lsp.enable("idris2_lsp")
 
 vim.lsp.enable("tinymist")
 vim.lsp.config('tinymist', {
@@ -199,7 +212,29 @@ vim.lsp.config('tinymist', {
 })
 
 require('coq-lsp').setup({lsp = lsp_setup})
-require('idris2').setup({})
+-- This includes all the defaults
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+  pattern = '*.idr',
+  callback = function(ev) 
+    require('idris2').setup({
+      client = {
+        hover = {
+          use_split = false, -- Persistent split instead of popups for hover
+          split_size = '30%', -- Size of persistent split, if used
+          auto_resize_split = false, -- Should resize split to use minimum space
+          split_position = 'bottom', -- bottom, top, left or right
+          with_history = false, -- Show history of hovers instead of only last
+          use_as_popup = false, -- Close the split on cursor movement
+        },
+      },
+      server = {}, -- Options passed to lspconfig idris2 configuration
+      autostart_semantic = true, -- Should start and refresh semantic highlight automatically
+      code_action_post_hook = function(action) end, -- Function to execute after a code action is performed:
+      use_default_semantic_hl_groups = true, -- Set default highlight groups for semantic tokens
+      default_regexp_syntax = true, -- Enable default highlight groups for traditional syntax based highlighting
+    })
+  end
+})
 
 require('typst-preview').setup({dependencies_bin = {['tinymist'] = 'tinymist'}})
 
@@ -324,4 +359,54 @@ require("nvim-tree").setup {
 local nvim_tree_api = require("nvim-tree.api")
 nmap_c('<C-n>', function() nvim_tree_api.tree.toggle({}) end, "toggle nvim tree")
 
+
 require("nvim-surround").setup({})
+
+------- Agda/Cornelis
+
+vim.g.cornelis_use_global_binary = 1
+
+vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+  pattern = {'*.agda', '*.lagda.*'},
+  callback = function(ev)
+    nmap_buf(ev.buf, "<space>l", ":CornelisLoad<CR>")
+    nmap_buf(ev.buf, "<space>r", ":CornelisLoad<CR>:CornelisRefine<CR>")
+    nmap_buf(ev.buf, "<space>c", ":CornelisMakeCase<CR>")
+    nmap_buf(ev.buf, "<space>,", ":CornelisTypeContext<CR>")
+    nmap_buf(ev.buf, "<space>.", ":CornelisTypeContextInfer<CR>")
+    nmap_buf(ev.buf, "<space>n", ":CornelisLoad<CR>:CornelisSolve<CR>")
+    nmap_buf(ev.buf, "<space>a", ":CornelisLoad<CR>:CornelisAuto<CR>")
+    nmap_buf(ev.buf, "<space>g", ":CornelisGive<CR>")
+    nmap_buf(ev.buf, "<space><space>", ":CornelisQuestionToMeta<CR>")
+    nmap_buf(ev.buf, "gd",        ":CornelisGoToDefinition<CR>")
+    nmap_buf(ev.buf, "gN",        ":CornelisPrevGoal<CR>")
+    nmap_buf(ev.buf, "gn",        ":CornelisNextGoal<CR>")
+    nmap_buf(ev.buf, "<C-A>",     ":CornelisInc<CR>")
+    nmap_buf(ev.buf, "<C-X>",     ":CornelisDec<CR>")
+  end
+})
+vim.api.nvim_create_autocmd("QuitPre", {
+  pattern = {'*.agda', '*.lagda.md'},
+  command = 'CornelisCloseInfoWindows'
+})
+
+
+--- Telescope
+
+require('telescope').setup{
+  defaults = {
+    layout_strategy = 'vertical',
+    layout_config = { height = 0.95 },
+  },
+}
+
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<space>ff', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<space>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<space>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<space>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+vim.keymap.set('n', '<space>fo', builtin.lsp_document_symbols, { desc = 'Telescope workspace symbols' })
+vim.keymap.set('n', '<space>fs', builtin.current_buffer_fuzzy_find, { desc = 'Telescope current buffer' })
+vim.keymap.set('n', '<space>fe', builtin.diagnostics, { desc = 'Telescope diagnostics' })
+

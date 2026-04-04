@@ -72,8 +72,8 @@ input type:touchpad {
 }
 
 input type:keyboard {
-  xkb_layout "us,gr"
-  xkb_variant ",polytonic"
+  xkb_layout "us,gr,ara"
+  xkb_variant ",polytonic,qwerty"
   xkb_options "caps:escape,compose:ralt,grp:rctrl_toggle"
   repeat_delay 300
   repeat_rate 50

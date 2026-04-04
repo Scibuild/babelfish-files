@@ -39,6 +39,17 @@
 
   console.useXkbConfig = true; # use xkb.options in tty.
 
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+     fcitx5.addons = with pkgs; [
+      rime-data
+      fcitx5-gtk
+      fcitx5-rime
+      fcitx5-chinese-addons
+    ];
+  };
+
   # nixpkgs.overlays = [
   #     (final: prev: {
   #river = prev.river.overrideAttrs (old: {
@@ -92,6 +103,8 @@
   programs.river.enable = true;
   programs.sway.enable = true;
 
+  programs.nix-index-database.comma.enable = true;
+
   # services.xserver.enable = true;
   # services.displayManager.sddm.enable = true;
   # services.desktopManager.plasma6.enable = true;
@@ -109,7 +122,25 @@
   services.xserver.xkb.options = "caps:escape";
 
   # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+  services.printing.drivers = [
+	  pkgs.gutenprint # — Drivers for many different printers from many different vendors.
+	  # pkgs.gutenprintBin # — Additional, binary-only drivers for some printers.
+	  pkgs.hplip # — Drivers for HP printers.
+	  pkgs.hplipWithPlugin # — Drivers for HP printers, with the proprietary plugin. Use NIXPKGS_ALLOW_UNFREE=1 nix-shell -p hplipWithPlugin --run 'sudo -E hp-setup' to add the printer, regular CUPS UI doesn't seem to work.
+	  # pkgs.postscript-lexmark # — Postscript drivers for Lexmark
+	  # pkgs.samsung-unified-linux-driver # — Proprietary Samsung Drivers
+	  # pkgs.splix # — Drivers for printers supporting SPL (Samsung Printer Language).
+	  pkgs.brlaser # — Drivers for some Brother printers
+	  pkgs.brgenml1lpr #  — Generic drivers for more Brother printers [1]
+	  pkgs.brgenml1cupswrapper  # — Generic drivers for more Brother printers [1]
+	  # pkgs.cnijfilter2 # — Drivers for some Canon Pixma devices (Proprietary driver)
+  ];
 
   # Enable sound.
   security.rtkit.enable = true;
@@ -142,6 +173,7 @@
   # services.globalprotect.enable = true;
 
   nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config.allowBroken = true;
   environment.systemPackages = with pkgs; [
     vim
     neovim
@@ -165,8 +197,6 @@
     networkmanagerapplet
 
     usbutils
-    udiskie
-    udisks
 
     zip
     unzip
@@ -252,6 +282,10 @@
 
   services.udev.enable = true;
 
+  services.locate.enable = true;
+
+  services.tailscale.enable = true;
+
   security.pam.loginLimits = [
     {
       domain = "@audio";
@@ -330,6 +364,24 @@
   '';
   powerManagement.powertop.enable = true;
   services.power-profiles-daemon.enable = true;
+
+  systemd = {
+    # Turn off the wifi card when in sleep, its supposed to improve battery life
+    services.preparesleep = {
+      enable = true;
+      path = [
+        pkgs.util-linux
+      ];
+      wantedBy = ["sleep.target"];
+      before = ["sleep.target"];
+      description = "Disable wifi and bluetooth before suspend";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = ''${pkgs.util-linux}/bin/rfkill block all'';
+        ExecStop = ''${pkgs.util-linux}/bin/rfkill unblock all'';
+      };
+    };
+  };
 
   # powerManagement.cpuFreqGovernor = "ondemand";
 

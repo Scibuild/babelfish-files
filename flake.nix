@@ -7,6 +7,12 @@
       url = "github:nix-community/home-manager?ref=release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    cornelis.url = "github:isovector/cornelis?ref=v2.7.0";
+    cornelis.inputs.nixpkgs.follows = "nixpkgs";
+
+    
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -14,6 +20,8 @@
       self,
       nixpkgs,
       home-manager,
+      cornelis,
+      nix-index-database,
       ...
     }:
     let
@@ -57,12 +65,15 @@
 
             home-manager.nixosModules.home-manager
             {
+              nixpkgs.overlays = [cornelis.overlays.cornelis];
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.${username} = import ./home.nix {
                 inherit homeDirectory username;
               };
             }
+
+            nix-index-database.nixosModules.default
           ];
         };
       };

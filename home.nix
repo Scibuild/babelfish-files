@@ -61,7 +61,7 @@ let
     gnumake
     # clang
     arduino-ide
-    # agda 
+    agda 
     # agdaPackages.standard-library
     # haskellPackages.agda-language-server
     idris2
@@ -87,6 +87,8 @@ let
     lmodern
     oswald
     noto-fonts
+    iosevka
+    julia-mono
 
     imhex
 
@@ -100,6 +102,13 @@ let
 
     # direnv
     # nix-direnv
+
+    mosh
+
+    gmp
+    gmpxx
+
+    prismlauncher
 
     (callPackage ./pkgs/riverbsp.nix {})
   ];
@@ -181,6 +190,7 @@ in
     file."/home/alex/.config/nvim".source = mk-symlink "config/nvim";
     file."/home/alex/.config/sway".source = mk-symlink "config/sway";
     file."/home/alex/.local/share/fonts".source = mk-symlink "config/fonts";
+    file."/home/alex/.local/share/fcitx5".source = mk-symlink "config/fcitx5";
 
 
 
@@ -191,6 +201,7 @@ in
       AWT_TOOLKIT="MToolkit";
       DEVKITPRO="/home/alex/software/devkitPro/buildscripts-devkitPPC_r46.1/opt/devkitpro";
       DEVKITARM="/home/alex/software/devkitPro/buildscripts-devkitPPC_r46.1/opt/devkitpro/devkitARM";
+      NIX_BUILD_SHELL = "zsh";
     };
 
     pointerCursor = {
@@ -227,6 +238,10 @@ in
       nui-nvim
       typst-preview-nvim
 
+      cornelis
+      which-key-nvim
+      telescope-nvim
+
       (nvim-treesitter.withPlugins (p: 
       let 
         nu_grammar = pkgs.tree-sitter.buildGrammar {
@@ -240,8 +255,9 @@ in
           };
         };
       in
-      [ p.c p.cpp p.glsl p.java p.lua p.nix nu_grammar p.rust p.typst p.vim p.vimdoc p.zig ]))
+      [ p.c p.cpp p.glsl p.java p.lua p.nix nu_grammar p.ocaml p.rust p.typst p.vim p.vimdoc p.zig ]))
     ];
+    extraPackages = [ pkgs.cornelis ];
   };
 
   programs.helix = {
@@ -626,5 +642,21 @@ in
     enableZshIntegration = true;
   };
 
+
   fonts.fontconfig.enable = true;
+
+  services.udiskie = {
+      enable = true;
+      settings = {
+          # workaround for
+          # https://github.com/nix-community/home-manager/issues/632
+          program_options = {
+              # replace with your favorite file manager
+              file_manager = "${pkgs.nemo-with-extensions}/bin/nemo";
+          };
+      };
+  };
+
+
+
 }

@@ -107,6 +107,8 @@ include "%L"
 <Multi_key> <f> <r> <o> <m> <t> <o> : "⇄" # latex \leadsto
 <Multi_key> <backslash> <greater> : "↘"
 <Multi_key> <i> <n> <c> : "↪"
+<Multi_key> <less> <asciitilde> <greater> : "↭"
+<Multi_key> <p> <e> <r> <m> : "↭"
 
 # Mathy stuffs
 <Multi_key> <f> <o> <r> <a> <l> <l> : "∀"  # latex \forall
@@ -172,6 +174,7 @@ include "%L"
 <Multi_key> <n> <e> <space> : "≠ "  # latex \ne
 <Multi_key> <n> <e> <q> <space> : "≠ "  # latex \neq
 <Multi_key> <e> <q> <m> <a> <y> <b> <e> : "≟"  # latex \?
+<Multi_key> <equal> <question> : "≟"  # latex \?
 <Multi_key> <asciitilde> <space> : "∼ " 
 <Multi_key> <p> <r> <o> <v> <e> <s> : "⊢" # latex \vdash
 <Multi_key> <bar> <minus> : "⊢" # latex \vdash
@@ -202,9 +205,9 @@ include "%L"
 <Multi_key> <O> <asterisk> : "⊛"  # latex \circledast
 <Multi_key> <O> <period> : "⊙"
 <Multi_key> <l> <a> <n> <g> <l> <e> : "⟨"  # latex \langle
-<Multi_key> <less> <space> : "⟨ "  # latex \langle
+<Multi_key> <less> <space> : "⟨"  # latex \langle
 <Multi_key> <r> <a> <n> <g> <l> <e> : "⟩"  # latex \rangle
-<Multi_key> <greater> <space> : "⟩ "  # latex \rangle
+<Multi_key> <greater> <space> : "⟩"  # latex \rangle
 <Multi_key> <bracketleft> <bracketleft> : "⟦" # latex \llbracket
 <Multi_key> <bracketright> <bracketright> : "⟧" # latex \rrbracket
 <Multi_key> <underscore> <bracketleft> : "⌊" # latex ?
@@ -222,6 +225,7 @@ include "%L"
 <Multi_key> <s> <h> <a> <r> <p> : "♯" # latex ?
 <Multi_key> <colon> <space> : "꞉ " # fake colon
 <Multi_key> <asterisk> <space> : "⋆"
+
 
 # Greek alphabet
 <Multi_key> <a> <l> <p> <h> <a> : "α"  # latex \alpha
@@ -494,6 +498,26 @@ include "%L"
 <Multi_key> <g> <o> : "ω"
 <Multi_key> <g> <O> : "Ω"
 <Multi_key> <g> <slash> <l> : "ƛ"
+
+<Multi_key> <s> <c> <r> <A> : "𝒜"
+<Multi_key> <s> <c> <r> <C> : "𝒞"
+<Multi_key> <s> <c> <r> <D> : "𝒟"
+<Multi_key> <s> <c> <r> <G> : "𝒢"
+<Multi_key> <s> <c> <r> <J> : "𝒥"
+<Multi_key> <s> <c> <r> <K> : "𝒦"
+<Multi_key> <s> <c> <r> <N> : "𝒩"
+<Multi_key> <s> <c> <r> <O> : "𝒪"
+<Multi_key> <s> <c> <r> <P> : "𝒫"
+<Multi_key> <s> <c> <r> <Q> : "𝒬"
+<Multi_key> <s> <c> <r> <S> : "𝒮"
+<Multi_key> <s> <c> <r> <T> : "𝒯"
+<Multi_key> <s> <c> <r> <U> : "𝒰"
+<Multi_key> <s> <c> <r> <V> : "𝒱"
+<Multi_key> <s> <c> <r> <W> : "𝒲"
+<Multi_key> <s> <c> <r> <X> : "𝒳"
+<Multi_key> <s> <c> <r> <Y> : "𝒴"
+<Multi_key> <s> <c> <r> <Z> : "𝒵"
+
 
 <Multi_key> <d> <d> : "∂"
 <Multi_key> <D> <D> : "∇"
