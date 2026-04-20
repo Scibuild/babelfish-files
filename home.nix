@@ -28,6 +28,9 @@ let
     imagemagick
     # aseprite
     puredata
+    sweethome3d.application
+    sweethome3d.furniture-editor
+    sweethome3d.textures-editor
 
     qalculate-qt
 
@@ -73,13 +76,14 @@ let
 
     # bintools
     gdb
-    ghidra
+    # ghidra
 
 
     grandorgue
     qsynth
     mpv
     mpc-cli
+    musescore
 
     victor-mono
     cascadia-code
@@ -93,6 +97,7 @@ let
     imhex
 
     mgba
+    melonDS
     appimage-run
 
     file
@@ -109,6 +114,8 @@ let
     gmpxx
 
     prismlauncher
+
+    ollama
 
     (callPackage ./pkgs/riverbsp.nix {})
   ];
@@ -213,6 +220,7 @@ in
   };
 
   programs.firefox.enable = true;
+  programs.chromium.enable = true;
 
   programs.neovim = {
     enable = true;
